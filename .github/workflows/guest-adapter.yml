@@ -1,0 +1,27 @@
+name: Guest Adapter Syntax Check
+
+on:
+  push:
+    paths:
+      - "Tests/GuestAdapter/**"
+      - ".github/workflows/guest-adapter.yml"
+  pull_request:
+    paths:
+      - "Tests/GuestAdapter/**"
+      - ".github/workflows/guest-adapter.yml"
+  workflow_dispatch:
+
+jobs:
+  syntax-check:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Objective-C against the iOS SDK
+        run: |
+          xcrun --sdk iphoneos clang \
+            -fsyntax-only \
+            -fobjc-arc \
+            -target arm64-apple-ios15.0 \
+            -framework Foundation \
+            -framework UIKit \
+            Tests/GuestAdapter/guest_adapter.m
